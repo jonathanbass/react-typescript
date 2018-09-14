@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { UsersApi } from './api/UsersApi';
+import { connect } from 'react-redux';
+import { GetAllUsers } from './actions/UserAction';
 import './App.css';
 import logo from './logo.svg';
 import { User } from './models/User';
 
 class App extends React.Component {
   public async componentDidMount() {
-    const users = await UsersApi.GetAllUsers();
-    this.setState(users);
+    const props = this.props as any;
+    props.GetAllUsers();
   }
 
   public render() {
-    const users = this.state || [];
+    const props = this.props as any;
+    const users = props.userReducer || [];
     const usersArray = Object.keys(users).map((key) => {
       return users[key] as User;
     });
@@ -33,4 +35,12 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state: any) => ({
+  ...state
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  GetAllUsers: () => dispatch(GetAllUsers())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps) (App);

@@ -1,22 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { GetAllUsers } from './actions/UserAction';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GetAllUsers } from '../../actions/UserAction';
+import { IAppProperties } from '../../interfaces/IAppProperties';
+import logo from '../../logo.svg';
 import './App.css';
-import logo from './logo.svg';
-import { User } from './models/User';
 
-class App extends React.Component {
+class App extends React.Component<IAppProperties, {}> {
   public async componentDidMount() {
-    const props = this.props as any;
-    props.GetAllUsers();
+    await this.props.GetAllUsers();
   }
 
   public render() {
-    const props = this.props as any;
-    const users = props.userReducer || [];
-    const usersArray = Object.keys(users).map((key) => {
-      return users[key] as User;
-    });
+    const users = this.props.userReducer || [];
 
     return (<div className="App">
       <header className="App-header">
@@ -28,18 +25,16 @@ class App extends React.Component {
       </p>
       <div>
         <ul className="list-group">{
-          usersArray.map(user => <li key={user.id}><strong>{user.name}:</strong> {user.email}</li>)
+          users.map(user => <li key={user.id}><strong>{user.name}:</strong> {user.email}</li>)
         }</ul>
       </div>
     </div>);
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  ...state
-})
+const mapStateToProps = (state: IAppProperties) => state;
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch<IAppProperties, {}, Action<IAppProperties>>) => ({
   GetAllUsers: () => dispatch(GetAllUsers())
 })
 

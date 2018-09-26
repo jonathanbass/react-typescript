@@ -7,13 +7,13 @@ import { IAppProperties } from '../../interfaces/IAppProperties';
 import logo from '../../logo.svg';
 import './App.css';
 
-class App extends React.Component<IAppProperties, {}> {
+class App extends React.Component<IAppProperties, IAppProperties> {
   public async componentDidMount() {
     await this.props.GetAllUsers();
   }
 
   public render() {
-    const users = this.props.userReducer || [];
+    const state = this.props.userReducer || [];
 
     return (<div className="App">
       <header className="App-header">
@@ -23,10 +23,12 @@ class App extends React.Component<IAppProperties, {}> {
       <p className="App-intro">
         To get started, edit <code>src/App.tsx</code> and save to reload.
       </p>
-      <div>
+      <div>{
+        state == null || state.isLoading ? 
+        <div className="lds-ripple"><div/><div/></div> : 
         <ul className="list-group">{
-          users.map(user => <li key={user.id}><strong>{user.name}:</strong> {user.email}</li>)
-        }</ul>
+          state.users.map(user => <li key={user.id}><strong>{user.name}:</strong> {user.email}</li>)
+        }</ul>}
       </div>
     </div>);
   }
@@ -35,6 +37,7 @@ class App extends React.Component<IAppProperties, {}> {
 const mapStateToProps = (state: IAppProperties) => state;
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppProperties, {}, Action<IAppProperties>>) => ({
+
   GetAllUsers: () => dispatch(GetAllUsers())
 })
 

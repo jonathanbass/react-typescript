@@ -1,10 +1,11 @@
 import ApplicationTypes from "../types/ApplicationTypes";
 
-export default function UsersReducer(state = [], action: any) {
+export default function UsersReducer(state = {}, action: any) {
+    state = { isLoading: true};
     switch(action.type) {
         case ApplicationTypes.Users:
-        return action.users;
+        return { isLoading: false, users: action.users };
         
-        default: return state;
+        default: return { ...state, users: [] };
     }
 }
